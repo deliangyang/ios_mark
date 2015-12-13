@@ -21,6 +21,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSString *path = @"https://maps.googleapis.com/maps/api/geocode/json?address=nanjing&sensor=true";
+        NSURL *url = [NSURL URLWithString:path];
+        sleep(5);
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        
+        NSArray *addr = [dict objectForKey:@"results"];
+        NSLog(@"%@", addr);
+        
+       // NSLog(@"%@", dict);
+    });
+    
     [self configureTableView];
     //self.view.backgroundColor = [UIColor redColor];
     // Do any additional setup after loading the view.
@@ -54,8 +70,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 4;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 4;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
